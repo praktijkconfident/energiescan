@@ -1,0 +1,75 @@
+/* ══════════════════════════════════════════════════════════════
+   STAP 1 — Jouw huisstijlkleuren
+   Vervang de waarden hieronder door jouw eigen hex-codes.
+   Je hebt deze al klaarstaan in de prompt-bouwer!
+   ══════════════════════════════════════════════════════════════ */
+
+:root {
+  --color-primair:      #3b5633;   /* ← jouw hoofdkleur     */
+  --color-achtergrond:  #fcebdc;   /* ← achtergrondkleur    */
+  --color-tekst:        #2a3a3c;   /* ← tekstkleur          */
+  --color-accent-1:     #9e3816;   /* ← accentkleur 1       */
+  --color-accent-2:     #d56119;   /* ← accentkleur 2       */
+  --color-accent-3:     #758d69;   /* ← accentkleur 3       */
+  --color-wit:          #ffffff;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   STAP 2 — Jouw lettertype: kies Optie A of Optie B
+   ══════════════════════════════════════════════════════════════
+
+   OPTIE A — Google Font
+   ─────────────────────
+   1. Ga naar fonts.google.com
+   2. Zoek jouw font, klik op "Get font" → "Get embed code"
+   3. Kopieer de @import-regel en plak hem hieronder
+   4. Pas de naam in --font-hoofd aan
+
+   Voorbeeld (verwijder de /* en * / om te activeren):
+
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap');
+
+   Zet dan onderaan dit blok:
+   --font-hoofd: 'Lato', sans-serif;
+
+
+   OPTIE B — Eigen font (.otf / .ttf / .woff2)
+   ─────────────────────────────────────────────
+   1. Kopieer jouw fontbestand naar de map /public/fonts/
+   2. Pas de bestandsnaam hieronder aan
+   3. Zet onderaan --font-hoofd: 'JouwFont', serif;
+
+   Voorbeeld (verwijder de /* en * / om te activeren):
+
+@font-face {
+  font-family: 'JouwFont';
+  src: url('/fonts/jouwnaam.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+   Zet dan onderaan dit blok:
+   --font-hoofd: 'JouwFont', Georgia, serif;
+
+   ══════════════════════════════════════════════════════════════ */
+
+
+/* ─── Basisstijlen ─────────────────────────────────────────── */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-achtergrond);
+  color: var(--color-tekst);
+  font-family: var(--font-hoofd, Inter, system-ui, sans-serif);
+  line-height: 1.75;
+}
