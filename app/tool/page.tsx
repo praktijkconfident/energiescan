@@ -412,7 +412,7 @@ export default function EnergiescanPage() {
                   <a
                     key={dienst}
                     className="es-dienst-link"
-                    href="https://praktijkconfident.nl/diensten/"
+                    href="https://www.praktijkconfident.nl/aanbod"
                     target="_blank"
                     rel="noreferrer"
                     style={{
