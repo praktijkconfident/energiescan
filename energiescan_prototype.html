@@ -1,0 +1,324 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&display=swap');
+  :root {
+    --groen: #5c8a72;
+    --groen-licht: #e8f0eb;
+    --groen-donker: #3d6b55;
+    --tekst: #2a2a2a;
+    --accent-1: #e8d5a3;
+    --accent-donker: #c9a84c;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  #energiescan-app { font-family: 'Inter', sans-serif; background: var(--groen-licht); color: var(--tekst); min-height: 100vh; padding: 0 0 3rem; }
+  .es-header { background: var(--groen); color: white; text-align: center; padding: 2.5rem 1.5rem 2rem; }
+  .es-header h1 { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 500; letter-spacing: 0.02em; margin-bottom: 0.4rem; }
+  .es-header p { font-size: 0.9rem; opacity: 0.85; font-weight: 300; max-width: 400px; margin: 0 auto; line-height: 1.6; }
+  .es-intro { max-width: 560px; margin: 2rem auto 0; padding: 0 1.5rem; text-align: center; }
+  .es-intro p { font-size: 0.92rem; color: #4a6058; line-height: 1.7; }
+  .es-canvas-wrap { display: flex; justify-content: center; padding: 1.5rem 1rem 0; }
+  .es-legenda { display: flex; gap: 1rem; justify-content: center; margin-top: 0.75rem; font-size: 0.75rem; color: #5a7a68; }
+  .es-legenda-item { display: flex; align-items: center; gap: 5px; }
+  .es-legenda-dot { width: 14px; height: 14px; border-radius: 4px; }
+  .es-gebieden { max-width: 560px; margin: 1.5rem auto 0; padding: 0 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .es-gebied-item { background: white; border-radius: 12px; padding: 0.75rem 1rem; display: flex; flex-direction: column; gap: 0.4rem; border: 1.5px solid transparent; transition: border 0.2s; }
+  .es-gebied-item.actief { border-color: var(--groen); }
+  .es-gebied-label { font-size: 0.78rem; font-weight: 500; color: var(--groen-donker); text-transform: uppercase; letter-spacing: 0.06em; }
+  .es-score-row { display: flex; gap: 4px; flex-wrap: wrap; }
+  .es-score-btn { width: 26px; height: 26px; border-radius: 6px; border: 1.5px solid #c5d9cc; background: white; font-size: 0.72rem; font-weight: 500; cursor: pointer; color: #6a8a78; transition: all 0.15s; display: flex; align-items: center; justify-content: center; font-family: 'Inter', sans-serif; }
+  .es-score-btn:hover { background: var(--groen-licht); border-color: var(--groen); color: var(--groen-donker); }
+  .es-score-btn.geselecteerd { background: var(--groen); border-color: var(--groen); color: white; font-weight: 600; transform: scale(1.1); box-shadow: 0 0 0 2px rgba(92,138,114,0.25); }
+  .es-score-btn.hoog { background: var(--accent-donker); border-color: var(--accent-donker); color: white; font-weight: 600; transform: scale(1.1); box-shadow: 0 0 0 2px rgba(201,168,76,0.25); }
+  .es-cta-wrap { max-width: 560px; margin: 1.5rem auto 0; padding: 0 1.5rem; text-align: center; }
+  .es-bekijk-btn { background: var(--groen); color: white; border: none; border-radius: 50px; padding: 0.85rem 2.5rem; font-size: 0.95rem; font-family: 'Inter', sans-serif; font-weight: 500; cursor: pointer; transition: background 0.2s, transform 0.1s; }
+  .es-bekijk-btn:hover { background: var(--groen-donker); }
+  .es-bekijk-btn:active { transform: scale(0.98); }
+  .es-bekijk-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .es-hint { font-size: 0.8rem; color: #7a9a88; margin-top: 0.6rem; }
+  .es-resultaten { display: none; max-width: 560px; margin: 0 auto; padding: 0 1.5rem; }
+  .es-resultaten.zichtbaar { display: block; }
+  .es-profiel-kaart { background: var(--groen); color: white; border-radius: 16px; padding: 1.75rem 1.5rem; margin-top: 1.5rem; text-align: center; }
+  .es-profiel-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.75; margin-bottom: 0.4rem; }
+  .es-profiel-naam { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 500; margin-bottom: 0.75rem; }
+  .es-profiel-tekst { font-size: 0.88rem; line-height: 1.7; opacity: 0.9; font-weight: 300; }
+  .es-gemiddelde-badge { display: inline-block; background: var(--accent-1); color: var(--groen-donker); font-weight: 600; font-size: 0.85rem; border-radius: 50px; padding: 0.25rem 1rem; margin-top: 1rem; }
+  .es-tips-titel { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 500; color: var(--groen-donker); margin: 1.75rem 0 1rem; }
+  .es-tip-kaart { background: white; border-radius: 14px; padding: 1.25rem 1.25rem 1rem; margin-bottom: 0.85rem; border-left: 4px solid var(--groen); }
+  .es-tip-gebied { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--groen); margin-bottom: 0.3rem; }
+  .es-tip-score { display: inline-block; background: #fef3e2; color: #9a6b10; font-size: 0.72rem; font-weight: 600; border-radius: 50px; padding: 0.15rem 0.6rem; margin-left: 6px; }
+  .es-tip-sectie { margin-top: 0.75rem; padding-top: 0.6rem; border-top: 1px solid #eef3ef; }
+  .es-tip-sectie-label { font-size: 0.72rem; font-weight: 600; color: #7a9a88; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.3rem; }
+  .es-tip-sectie p { font-size: 0.85rem; line-height: 1.65; color: #3a3a3a; }
+  .es-cta-sectie { background: white; border-radius: 16px; padding: 1.75rem 1.5rem; margin-top: 1.75rem; text-align: center; border: 1.5px solid #d0e4d8; }
+  .es-cta-sectie h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 500; color: var(--groen-donker); margin-bottom: 0.5rem; }
+  .es-cta-sectie p { font-size: 0.87rem; color: #5a7a68; line-height: 1.65; margin-bottom: 1.25rem; }
+  .es-cta-primair { display: block; background: var(--groen); color: white; border: none; border-radius: 50px; padding: 0.9rem 2rem; font-size: 0.95rem; font-family: 'Inter', sans-serif; font-weight: 500; cursor: pointer; text-decoration: none; margin-bottom: 1rem; transition: background 0.2s; }
+  .es-cta-primair:hover { background: var(--groen-donker); }
+  .es-diensten-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.6rem; margin-top: 0.5rem; }
+  .es-dienst-link { display: block; background: var(--groen-licht); color: var(--groen-donker); border-radius: 10px; padding: 0.7rem 0.5rem; font-size: 0.78rem; font-weight: 500; text-decoration: none; text-align: center; border: 1.5px solid #c5d9cc; transition: background 0.15s; line-height: 1.4; }
+  .es-dienst-link:hover { background: #d4e8da; }
+  .es-opnieuw { display: block; margin: 1.5rem auto 0; background: transparent; border: 1.5px solid var(--groen); color: var(--groen); border-radius: 50px; padding: 0.65rem 2rem; font-size: 0.88rem; font-family: 'Inter', sans-serif; cursor: pointer; transition: all 0.15s; }
+  .es-opnieuw:hover { background: var(--groen); color: white; }
+</style>
+
+<div id="energiescan-app">
+  <div class="es-header">
+    <h1>Energiescan</h1>
+    <p>Ontdek waar jouw energie stroomt en waar ze vastloopt</p>
+  </div>
+  <div id="stap-invullen">
+    <div class="es-intro">
+      <p>Geef elk levensgebied een score van 1 tot 10.<br>Hoe tevreden ben jij hier nu mee?</p>
+    </div>
+    <div class="es-canvas-wrap">
+      <canvas id="spinweb" width="300" height="300"></canvas>
+    </div>
+    <div class="es-legenda">
+      <div class="es-legenda-item">
+        <div class="es-legenda-dot" style="background:#5c8a72;"></div>
+        <span>Score 1–7</span>
+      </div>
+      <div class="es-legenda-item">
+        <div class="es-legenda-dot" style="background:#c9a84c;"></div>
+        <span>Score 8–10</span>
+      </div>
+    </div>
+    <div class="es-gebieden" id="gebieden-container"></div>
+    <div class="es-cta-wrap">
+      <button class="es-bekijk-btn" id="bekijk-resultaten" disabled onclick="toonResultaten()">Bekijk mijn energieprofiel</button>
+      <p class="es-hint" id="hint-tekst">Scoor alle 10 gebieden om verder te gaan</p>
+    </div>
+  </div>
+  <div class="es-resultaten" id="stap-resultaten">
+    <div class="es-profiel-kaart" id="profiel-kaart"></div>
+    <p class="es-tips-titel" id="tips-titel"></p>
+    <div id="tips-container"></div>
+    <div class="es-cta-sectie">
+      <h3>Klaar voor de volgende stap?</h3>
+      <p>Samen kijken we waar jouw energie lekt en hoe je vanuit plezier en genieten weer in balans komt.</p>
+      <a class="es-cta-primair" href="https://praktijkconfident.clientomgeving.nl/afspraak-maken" target="_blank">Plan een gratis kennismakingsgesprek</a>
+      <div class="es-diensten-grid">
+        <a class="es-dienst-link" href="https://www.praktijkconfident.nl/aanbod" target="_blank">NEI-therapie</a>
+        <a class="es-dienst-link" href="https://www.praktijkconfident.nl/aanbod" target="_blank">Ademcoaching</a>
+        <a class="es-dienst-link" href="https://www.praktijkconfident.nl/aanbod" target="_blank">Aromatherapie</a>
+      </div>
+    </div>
+    <button class="es-opnieuw" onclick="opnieuw()">← Opnieuw invullen</button>
+  </div>
+</div>
+
+<script>
+const gebieden = [
+  { naam: 'Energie' }, { naam: 'Slaap' }, { naam: 'Voeding' }, { naam: 'Beweging' },
+  { naam: 'Werk & Loopbaan' }, { naam: 'Relaties' }, { naam: 'Zelfzorg' },
+  { naam: 'Plezier & Genieten' }, { naam: 'Zingeving' }, { naam: 'Financiën' }
+];
+
+const tips = {
+  'Energie': {
+    adem: 'Probeer de 4-7-8 neusademhaling: adem langzaam in door je neus gedurende 4 tellen, houd je adem vast gedurende 7 tellen, en adem volledig uit door je neus in 8 tellen. Dit activeert je parasympathisch zenuwstelsel en geeft direct meer rust en energie.',
+    olie: 'Pepermunt of rozemarijn essentiële olie op je polsen of nek geeft een directe energieboost zonder cafeïne.',
+    ontspanning: 'Plan elke dag één moment van 10 minuten echte rust — geen scherm, geen taken. Gun je lichaam herseltijd.'
+  },
+  'Slaap': {
+    adem: 'Doe vlak voor het slapen 5 minuten buikademhaling via je neus: leg één hand op je buik, adem rustig in door je neus zodat je buik omhoog beweegt, en adem weer langzaam uit door je neus. Je borst blijft stil. Dit kalmeert je zenuwstelsel en bereidt je voor op diepe slaap.',
+    olie: 'Lavendel of kamille essentiële olie op je kussen of in een diffuser kalmeert het zenuwstelsel en bereidt je lichaam voor op diepe slaap.',
+    ontspanning: 'Maak van het uur voor bedtijd een vaste winddown-routine: dim de lichten, sluit schermen af en drink een kopje kruidenthee.'
+  },
+  'Voeding': {
+    adem: 'Eet bewust: neem voor de maaltijd drie tellen in door je neus, houd kort vast, en adem rustig uit door je neus. Herhaal dit drie keer. Dit activeert de spijsvertering en helpt je lichaam beter voedingsstoffen op te nemen.',
+    olie: 'Gember of kardemom essentiële olie (1 druppel in warme thee of water) ondersteunt een gezonde spijsvertering en vermindert een opgeblazen gevoel.',
+    ontspanning: 'Eet minimaal één maaltijd per dag zonder afleiding. Proef bewust, kauw rustig en geniet van wat je eet.'
+  },
+  'Beweging': {
+    adem: 'Beweeg met je neusademhaling mee. Begin een wandeling met dit ritme: adem in door je neus gedurende 3 stappen, adem uit door je neus gedurende 4 stappen. Mond blijft gesloten. Dit maakt beweging een energiebron in plaats van een taak.',
+    olie: 'Eucalyptus of dennen essentiële olie voor het bewegen helpt de ademhaling te openen en geeft het gevoel van frisse energie.',
+    ontspanning: 'Kies beweging die blij maakt, niet die moet. Dansen in de keuken telt ook. Plezier is het beste motivatiemiddel.'
+  },
+  'Werk & Loopbaan': {
+    adem: 'Gebruik de box-neusademhaling bij stressvolle werkmomenten: adem in door je neus gedurende 4 tellen, houd vast 4 tellen, adem uit door je neus 4 tellen, houd leeg 4 tellen. Mond blijft gesloten. Doet wonderen voor je concentratie en rust.',
+    olie: 'Sinaasappel of bergamot essentiële olie op je werkplek creëert een positieve sfeer en verhoogt focus en stemming.',
+    ontspanning: 'Bouw bewust rustmomenten in je werkdag. Elke 90 minuten 10 minuten echte pauze houdt je brein scherp en energiek.'
+  },
+  'Relaties': {
+    adem: 'Wanneer een gesprek spannend voelt, adem dan bewust in door je neus en adem langzaam uit door je neus — maak de uitademing twee keer zo lang als de inademing. Dit geeft je zenuwstelsel rust en je brein ruimte om te voelen in plaats van te reageren.',
+    olie: 'Roos of ylang-ylang essentiële olie opent het hart en ondersteunt zachtheid en verbinding in je relaties.',
+    ontspanning: 'Plan regelmatig tijd voor verbinding zonder agenda — gewoon samen zijn, zonder prestaties of verwachtingen.'
+  },
+  'Zelfzorg': {
+    adem: 'Zie bewust neusademen als de meest liefdevolle daad voor jezelf. Adem drie minuten lang alleen in en uit door je neus, met volledige aandacht voor het gevoel van de lucht bij je neusgaten. Dit is pure zelfzorg.',
+    olie: 'Frankincense of sandelhout essentiële olie ondersteunt zelfreflectie en het gevoel van veiligheid bij jezelf. Gebruik tijdens meditatie of een warm bad.',
+    ontspanning: 'Maak een lijst van wat jou écht voedt — niet wat goed voor je is, maar wat jou blij maakt. Plan dat in.'
+  },
+  'Plezier & Genieten': {
+    adem: 'Plezier begint met aanwezig zijn. Oefen sensory neusademhaling: adem langzaam in door je neus en neem bewust één zintuiglijke gewaarwording mee — een geur, geluid, gevoel. Adem rustig uit door je neus. Herhaal dit een paar keer.',
+    olie: 'Citrus-blends of ylang-ylang essentiële olie roepen vreugde en lichtheid op. Gebruik ze als je bewust wil genieten van een moment.',
+    ontspanning: 'Schrijf dagelijks drie dingen op waarvan je genoten hebt — hoe klein ook. Dit traint je brein om plezier te herkennen en er meer van te willen.'
+  },
+  'Zingeving': {
+    adem: 'Begin je dag met 5 minuten stille neusademhaling: adem rustig in door je neus, adem rustig uit door je neus, en stel jezelf de vraag: "Wat wil ik vandaag bijdragen?" Luister in de stilte na elke uitademing naar wat er opkomt.',
+    olie: 'Frankincense en mirre essentiële olie zijn al eeuwenlang verbonden met bezinning en spirituele verbinding. Gebruik ze bij reflectiemomenten.',
+    ontspanning: 'Zoek wekelijks iets wat je raakt — een boek, gesprek, wandeling in de natuur. Zingeving groeit waar je aandacht naartoe gaat.'
+  },
+  'Financiën': {
+    adem: 'Financiële spanning zit vaak vastgezet in het lichaam. Doe bij geldzorgen eerst een lange neusuitademing: adem in door je neus gedurende 4 tellen, adem uit door je neus gedurende 8 tellen. Herhaal dit 5 keer om het stresssysteem te kalmeren.',
+    olie: 'Bergamot of basilicum essentiële olie helpt bij stressverlichting en het nemen van heldere beslissingen.',
+    ontspanning: 'Verbind geld niet alleen aan angst maar ook aan vrijheid. Schrijf op wat financiële ruimte jou zou geven — plezier, rust, keuzes.'
+  }
+};
+
+const profielen = [
+  { min: 0, max: 4.9, naam: 'Uitgeput maar bewust', tekst: 'Je lichaam en geest staan onder grote druk. Je voelt dat er iets moet veranderen, en dat bewustzijn is al een kracht. Nu is het tijd om te stoppen met doorzetten op wilskracht en te beginnen met luisteren naar wat je écht nodig hebt.' },
+  { min: 5, max: 6.9, naam: 'Veerkrachtig maar zoekend', tekst: 'Je houdt veel ballen in de lucht en doet het best — maar je voelt dat er meer in zit. Er is ruimte om te groeien van overleven naar echt genieten. Je energiereserves zijn er, ze vragen alleen om de juiste voeding.' },
+  { min: 7, max: 7.9, naam: 'In beweging naar balans', tekst: 'Je bent op de goede weg. Op veel gebieden gaat het goed, en je hebt al geleerd hoe je voor jezelf zorgt. Een paar gerichte stappen kunnen het verschil maken tussen goed en volop leven.' },
+  { min: 8, max: 10, naam: 'In balans en bloeiend', tekst: 'Je leeft grotendeels in lijn met wat je energie geeft. Dat is een prestatie op zich. Gebruik deze scan om te zien waar nog wat extra aandacht je leven nóg rijker kan maken.' }
+];
+
+const scores = new Array(10).fill(null);
+
+function buildGebieden() {
+  const container = document.getElementById('gebieden-container');
+  gebieden.forEach((g, i) => {
+    const div = document.createElement('div');
+    div.className = 'es-gebied-item';
+    div.id = 'gebied-' + i;
+    let btns = '';
+    for (let s = 1; s <= 10; s++) {
+      btns += `<button class="es-score-btn" onclick="setScore(${i}, ${s})" id="btn-${i}-${s}">${s}</button>`;
+    }
+    div.innerHTML = `<div class="es-gebied-label">${g.naam}</div><div class="es-score-row">${btns}</div>`;
+    container.appendChild(div);
+  });
+}
+
+function setScore(index, score) {
+  scores[index] = score;
+  for (let s = 1; s <= 10; s++) {
+    const btn = document.getElementById('btn-' + index + '-' + s);
+    btn.className = 'es-score-btn';
+    if (s === score) btn.classList.add(score >= 8 ? 'hoog' : 'geselecteerd');
+  }
+  document.getElementById('gebied-' + index).classList.add('actief');
+  checkKlaar();
+  tekenSpinweb();
+}
+
+function checkKlaar() {
+  const klaar = scores.every(s => s !== null);
+  document.getElementById('bekijk-resultaten').disabled = !klaar;
+  const ingevuld = scores.filter(s => s !== null).length;
+  document.getElementById('hint-tekst').textContent = klaar ? 'Alles ingevuld — bekijk jouw profiel!' : `${ingevuld} van 10 ingevuld`;
+}
+
+function tekenSpinweb() {
+  const canvas = document.getElementById('spinweb');
+  const ctx = canvas.getContext('2d');
+  const cx = 150, cy = 150, r = 120, n = 10;
+  ctx.clearRect(0, 0, 300, 300);
+  for (let ring = 1; ring <= 10; ring++) {
+    const rr = r * ring / 10;
+    ctx.beginPath();
+    for (let i = 0; i < n; i++) {
+      const angle = (i / n) * Math.PI * 2 - Math.PI / 2;
+      i === 0 ? ctx.moveTo(cx + rr * Math.cos(angle), cy + rr * Math.sin(angle)) : ctx.lineTo(cx + rr * Math.cos(angle), cy + rr * Math.sin(angle));
+    }
+    ctx.closePath();
+    ctx.strokeStyle = ring === 10 ? '#5c8a72' : '#c5d9cc';
+    ctx.lineWidth = ring === 10 ? 1.5 : 0.8;
+    ctx.stroke();
+  }
+  for (let i = 0; i < n; i++) {
+    const angle = (i / n) * Math.PI * 2 - Math.PI / 2;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + r * Math.cos(angle), cy + r * Math.sin(angle));
+    ctx.strokeStyle = '#c5d9cc';
+    ctx.lineWidth = 0.8;
+    ctx.stroke();
+  }
+  if (scores.some(s => s !== null)) {
+    ctx.beginPath();
+    for (let i = 0; i < n; i++) {
+      const angle = (i / n) * Math.PI * 2 - Math.PI / 2;
+      const rr = r * (scores[i] !== null ? scores[i] : 0) / 10;
+      i === 0 ? ctx.moveTo(cx + rr * Math.cos(angle), cy + rr * Math.sin(angle)) : ctx.lineTo(cx + rr * Math.cos(angle), cy + rr * Math.sin(angle));
+    }
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(92,138,114,0.25)';
+    ctx.fill();
+    ctx.strokeStyle = '#5c8a72';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    for (let i = 0; i < n; i++) {
+      if (scores[i] !== null) {
+        const angle = (i / n) * Math.PI * 2 - Math.PI / 2;
+        const rr = r * scores[i] / 10;
+        ctx.beginPath();
+        ctx.arc(cx + rr * Math.cos(angle), cy + rr * Math.sin(angle), 3.5, 0, Math.PI * 2);
+        ctx.fillStyle = scores[i] >= 8 ? '#c9a84c' : '#5c8a72';
+        ctx.fill();
+      }
+    }
+  }
+  ctx.font = '500 9px Inter, sans-serif';
+  ctx.fillStyle = '#3d6b55';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  for (let i = 0; i < n; i++) {
+    const angle = (i / n) * Math.PI * 2 - Math.PI / 2;
+    ctx.fillText(gebieden[i].naam.split(' ')[0], cx + (r + 20) * Math.cos(angle), cy + (r + 20) * Math.sin(angle));
+  }
+}
+
+function toonResultaten() {
+  const gem = scores.reduce((a, b) => a + b, 0) / 10;
+  const profiel = profielen.find(p => gem >= p.min && gem <= p.max) || profielen[1];
+  document.getElementById('profiel-kaart').innerHTML = `
+    <div class="es-profiel-label">Jouw energieprofiel</div>
+    <div class="es-profiel-naam">${profiel.naam}</div>
+    <div class="es-profiel-tekst">${profiel.tekst}</div>
+    <div class="es-gemiddelde-badge">Gemiddelde score: ${gem.toFixed(1)}</div>
+  `;
+  const lage = scores.map((s, i) => ({ naam: gebieden[i].naam, score: s })).filter(g => g.score < 8).sort((a, b) => a.score - b.score);
+  const tipsContainer = document.getElementById('tips-container');
+  tipsContainer.innerHTML = '';
+  if (lage.length === 0) {
+    document.getElementById('tips-titel').textContent = 'Jij scoort op alle gebieden hoog — goed bezig!';
+    tipsContainer.innerHTML = '<p style="font-size:.9rem;color:#5a7a68;line-height:1.7;">Jouw energie is goed in balans. Gebruik de tips hieronder om dit niveau te onderhouden en verder te verdiepen.</p>';
+  } else {
+    document.getElementById('tips-titel').textContent = `Aandacht voor ${lage.length} gebied${lage.length > 1 ? 'en' : ''}`;
+    lage.forEach(g => {
+      const t = tips[g.naam];
+      if (!t) return;
+      const kaart = document.createElement('div');
+      kaart.className = 'es-tip-kaart';
+      kaart.innerHTML = `
+        <div class="es-tip-gebied">${g.naam} <span class="es-tip-score">score ${g.score}</span></div>
+        <div class="es-tip-sectie"><div class="es-tip-sectie-label">Ademhaling</div><p>${t.adem}</p></div>
+        <div class="es-tip-sectie"><div class="es-tip-sectie-label">Essentiële oliën</div><p>${t.olie}</p></div>
+        <div class="es-tip-sectie"><div class="es-tip-sectie-label">Ontspanning & zelfzorg</div><p>${t.ontspanning}</p></div>
+      `;
+      tipsContainer.appendChild(kaart);
+    });
+  }
+  document.getElementById('stap-invullen').style.display = 'none';
+  const res = document.getElementById('stap-resultaten');
+  res.classList.add('zichtbaar');
+  res.scrollIntoView({ behavior: 'smooth' });
+}
+
+function opnieuw() {
+  scores.fill(null);
+  document.getElementById('stap-invullen').style.display = 'block';
+  document.getElementById('stap-resultaten').classList.remove('zichtbaar');
+  document.getElementById('gebieden-container').innerHTML = '';
+  buildGebieden();
+  document.getElementById('bekijk-resultaten').disabled = true;
+  document.getElementById('hint-tekst').textContent = '0 van 10 ingevuld';
+  tekenSpinweb();
+  document.getElementById('stap-invullen').scrollIntoView({ behavior: 'smooth' });
+}
+
+buildGebieden();
+tekenSpinweb();
+</script>
